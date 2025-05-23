@@ -1,0 +1,6 @@
+pytest
+pytest-allure-adaptor
+requests
+faker
+pydantic
+allure-pytest 
