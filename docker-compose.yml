@@ -1,0 +1,6 @@
+services:
+  test_runner:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["pytest", "tests/", "--maxfail=1", "--disable-warnings", "-q"]  # Запуск всех тестов
