@@ -10,6 +10,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Копируем все необходимые файлы в контейнер
 COPY ./tests /app/tests
+COPY ./services /app/services
 COPY ./utils /app/utils
 COPY conftest.py /app/conftest.py
 
