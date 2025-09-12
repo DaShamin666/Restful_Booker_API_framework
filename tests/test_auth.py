@@ -1,6 +1,6 @@
 import pytest
 import allure
-from utils.schemas import AuthResponse
+from services.models.schemas import AuthResponse
 
 @allure.feature("Auth")
 @pytest.mark.parametrize("username,password,expected_status", [

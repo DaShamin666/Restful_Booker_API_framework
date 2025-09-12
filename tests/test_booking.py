@@ -1,7 +1,6 @@
-import pytest
 import allure
 from utils.data_generator import generate_booking_data
-from utils.schemas import CreateBookingResponse, Booking
+from services.models.schemas import CreateBookingResponse, Booking
 
 @allure.feature("Booking")
 def test_create_booking_success(api_client):
