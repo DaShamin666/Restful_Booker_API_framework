@@ -12,7 +12,11 @@ class TestBooking:
         CreateBookingResponse.model_validate(response.json())
 
     def test_get_booking_by_id(self, api_client):
-        booking_id = 1
+        data = generate_booking_data()
+        create_response = api_client.post("/booking", data=data)
+        assert create_response.status_code == 200
+        booking_id = create_response.json()["bookingid"]
+        
         response = api_client.get(f"/booking/{booking_id}")
         assert response.status_code == 200
         Booking.model_validate(response.json())
@@ -23,13 +27,21 @@ class TestBooking:
         assert isinstance(response.json(), list)
 
     def test_update_booking(self, api_client):
-        booking_id = 1
         data = generate_booking_data()
-        response = api_client.put(f"/booking/{booking_id}", data=data)
+        create_response = api_client.post("/booking", data=data)
+        assert create_response.status_code == 200
+        booking_id = create_response.json()["bookingid"]
+        
+        update_data = generate_booking_data()
+        response = api_client.put(f"/booking/{booking_id}", data=update_data)
         assert response.status_code == 200
         Booking.model_validate(response.json())
 
     def test_delete_booking(self, api_client):
-        booking_id = 1
+        data = generate_booking_data()
+        create_response = api_client.post("/booking", data=data)
+        assert create_response.status_code == 200
+        booking_id = create_response.json()["bookingid"]
+        
         response = api_client.delete(f"/booking/{booking_id}")
         assert response.status_code == 201
