@@ -2,6 +2,7 @@ from faker import Faker
 
 fake = Faker()
 
+
 def generate_booking_data():
     return {
         "firstname": fake.first_name(),
@@ -13,4 +14,4 @@ def generate_booking_data():
             "checkout": fake.date_this_year().isoformat(),
         },
         "additionalneeds": fake.word()
-    } 
+    }
