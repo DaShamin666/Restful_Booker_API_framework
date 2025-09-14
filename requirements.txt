@@ -3,4 +3,12 @@ requests
 faker
 pydantic
 allure-pytest==2.13.5
-allure-python-commons==2.13.5 
+allure-python-commons==2.13.5
+
+# Development dependencies
+flake8
+black
+isort
+bandit
+safety
+pre-commit 

@@ -1,7 +1,7 @@
-import pytest
 import allure
 from utils.data_generator import generate_booking_data
 from services.models.schemas import CreateBookingResponse, Booking
+
 
 class TestBooking:
     @allure.feature("Booking")

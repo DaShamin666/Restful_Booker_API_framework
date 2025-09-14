@@ -1,5 +1,6 @@
 import requests
 
+
 class APIClient:
     BASE_URL = "https://restful-booker.herokuapp.com"
 
@@ -16,4 +17,4 @@ class APIClient:
         return requests.patch(f"{self.BASE_URL}{endpoint}", json=data, headers=headers, cookies=cookies)
 
     def delete(self, endpoint, headers=None, cookies=None):
-        return requests.delete(f"{self.BASE_URL}{endpoint}", headers=headers, cookies=cookies) 
+        return requests.delete(f"{self.BASE_URL}{endpoint}", headers=headers, cookies=cookies)
