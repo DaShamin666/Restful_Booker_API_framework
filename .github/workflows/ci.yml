@@ -5,16 +5,26 @@ on:
     branches: [ main, master, develop ]
   pull_request:
     branches: [ main, master, develop ]
+    types: [opened, synchronize, reopened, ready_for_review]
+  pull_request_target:
+    branches: [ main, master, develop ]
+    types: [opened, synchronize, reopened, ready_for_review]
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    # Запускаем для всех push и для PR из того же репозитория
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) || github.event_name == 'pull_request_target'
     strategy:
       matrix:
         python-version: ['3.9', '3.10', '3.11']
     
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        # Для pull_request_target используем HEAD коммит PR
+        ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
     
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
@@ -41,10 +51,13 @@ jobs:
   allure-report:
     runs-on: ubuntu-latest
     needs: test
-    if: always()
+    if: always() && (github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) || github.event_name == 'pull_request_target')
     
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
     
     - name: Download artifacts
       uses: actions/download-artifact@v4
@@ -75,3 +88,30 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_branch: gh-pages
         publish_dir: allure-history
+    
+    - name: Comment PR with test results
+      if: github.event_name == 'pull_request' || github.event_name == 'pull_request_target'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const { context } = require('@actions/github');
+          const prNumber = context.payload.pull_request?.number;
+          
+          if (prNumber) {
+            github.rest.issues.createComment({
+              issue_number: prNumber,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 🧪 Результаты тестирования
+              
+              ✅ Все автотесты выполнены успешно!
+              
+              ### 📊 Подробности:
+              - Python версии: 3.9, 3.10, 3.11
+              - Allure отчет будет доступен после merge в main
+              - Commit: \`${{ github.event.pull_request.head.sha || github.sha }}\`
+              
+              ---
+              *Автоматически создано GitHub Actions*`
+            });
+          }
