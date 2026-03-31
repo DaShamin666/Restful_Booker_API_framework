@@ -88,4 +88,4 @@ pytest
 - `tests/test_booking.py` - тесты бронирования
 - `tests/test_ping.py` - тест проверки доступности API
 - `.github/workflows/` - GitHub Actions workflows
-- `.github/pull_request_template.md` - шаблон для PR 
+- `.github/pull_request_template.md` - шаблон для PR a
